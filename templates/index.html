@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Image Classification</title>
+    <link href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+	
+	<style type="text/css">
+	
+	@media (max-width: 480px) { 
+	  
+		#header { 
+			font-size: 60px !important;
+		 } 
+		 
+		 #middle-container { 
+		   
+			border: none;	
+			margin-left: 0px;+++
+			margin-right: 0px;
+			border-radius: 1em;
+		}
+		 
+		 .button-primary { 
+			background: #324c7f;
+			border: 1px solid #324c7f;
+			color: #fff;
+			text-shadow: #1c305c 1px 1px 0;
+			box-shadow: inset 0 -3px 0 #005786;
+			width: auto;
+			height: 40px;
+			border-radius: 2em;
+			font-size: 20px;
+		}
+		
+		.loader { 
+			margin-left: 150px;
+			margin-bottom: 20px;
+		}
+	}
+	
+	@media (min-width: 480px) { 
+	
+		.button-primary { 
+			background: #324c7f;
+			border: 1px solid #324c7f;
+			color: #fff;
+			text-shadow: #1c305c 1px 1px 0;
+			box-shadow: inset 0 -3px 0 #005786;
+			width: auto;
+			height: 40px;
+			border-radius: 2em;
+			font-size: 20px;
+		}
+		
+		#left-container { 
+		   width: 20%
+		}
+		
+		#middle-container { 
+		   
+		   border: 1px solid #bebebe;	
+		margin-left: 375px;
+		margin-right: 375px;
+		border-radius: 1em;
+		}
+		
+		#right-container { 
+		   width: 20%
+		}
+		
+		
+		
+		#header { 
+		  font-size: 80px; 
+		  margin-top: 20px;
+		
+		}
+		
+		.loader { 
+			margin-left: 350px;
+			margin-bottom: 20px;
+		}
+	}
+	
+	.gradient-rule { 
+		height: 18px;
+		margin: 0.5em 0 0 0;
+		border-top: 2px solid #bfe1ed;
+		
+		background-size: 100%;
+		background-image: -moz-radial-gradient(center, ellipse cover, #e5faff 0%, #e5faff 0%, #ffffff 88%, #ffffff 100%);
+		background-image: -webkit-radial-gradient(center, ellipse cover, #e5faff 0%, #e5faff 0%, #ffffff 88%, #ffffff 100%);
+		background-image: radial-gradient(ellipse cover at center, #e5faff 0%, #e5faff 0%, #ffffff 88%, #ffffff 100%);
+		background-position: 0 -8px;
+		background-repeat: no-repeat;
+	
+	}
+	
+	#header { 
+		margin-top: 20px;
+	
+	}
+	
+	body { 
+		text-align:center; 
+		background-image: url(./images/baby-vibes-bg.png);
+	}
+	
+	#content { 
+		margin-top: 40px; 
+		border-top: 1px solid lavender; 
+		padding-top: 10px;
+	}
+	
+	#upload p { 
+		font-size:1.05em;
+		color:#333;
+		font-weight:bold;
+	}
+	
+	.image-preview {
+		
+		
+		position: relative;
+		border: 5px solid #F8F8F8;
+		box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.1);
+		margin-top: 1em;
+		margin-bottom: 1em;
+		
+	}
+
+	.loader {
+		border: 8px solid #f3f3f3; /* Light grey */
+		border-top: 8px solid #3498db; /* Blue */
+		border-radius: 50%;
+		width: 50px;
+		height: 50px;
+		animation: spin 1s linear infinite;
+		
+	}
+
+	@keyframes spin {
+		0% { transform: rotate(0deg); }
+		100% { transform: rotate(360deg); }
+	}
+	
+	</style>
+  </head>
+  <body>
+    
+	<div id="root" >
+		<div id="header">Baby Vibes</div>
+		<div id="content" class="gradient-rule">
+		
+		
+		<div id="middle-container">
+			<form id="upload" name="upload" method="post" enctype="multipart/form-data">
+				<div style="margin-bottom: 5px;" >
+					<p>Upload File: <input type="file" id="fileToUpload" name="file" accept=".png, .jpg, .jpeg"> </p>
+                </div>
+            </form>
+				<br/>
+				<div id="uploaded_image" class="image-preview" style="display:none;"></div>
+				<br/>
+				<div class="loader" style="display:none"></div>
+				<br/>
+				<div>
+					<input type="button" id="btn_predict"value="Upload and Predict" class="button-primary" disabled style="background: #e4e7ee; color:black"> 
+				</div>
+				<br/>
+				<div>
+					<a href="javascript:void(0)" id="clear_form">Cancel</a>
+				</div>
+				<br/>
+				<div id="msg"></div>
+				<br/>
+				<div id="result" style="margin-top: 5px; display:none;">
+					<object height="350" width="425">
+						<param name="movie" value="https://www.youtube.com/embed/cqyziA30whE">
+						<param name="wmode" value="transparent">
+						<embed height="350" src="https://www.youtube.com/embed/cqyziA30whE" type="application/x-shockwave-flash" width="425" wmode="transparent">
+					</object>
+				</div>
+			
+			</div>
+		
+		</div>
+		<div id="footer"/>
+	</div>
+	
+	<script type="text/javascript">
+	
+		
+
+		function handleFileSelect(evt) {
+			$("#btn_predict").removeAttr("disabled")
+			$("#btn_predict").attr("style", "background: #324c7f; color:#fff");
+		   readURL(evt.target);
+		}
+
+		document.getElementById('fileToUpload').addEventListener('change', handleFileSelect, false);
+
+		function readURL(input) {
+		  if (input.files && input.files[0]) {
+			  var fileType = input.files[0].type;
+			  if (fileType === "image/png" || fileType === "image/jpeg" || fileType === "image/jpg") {
+				var reader = new FileReader();
+				
+				reader.onload = function(fileLoadedEvent) {
+					var srcData = fileLoadedEvent.target.result; // <--- data: base64
+
+					var img = document.createElement('img');
+					img.src = srcData;
+					img.class = "image-preview";
+					img.crossOrigin = 'Anonymous';
+					
+					$("#uploaded_image").html(img);
+					$("#uploaded_image").show();
+					$("#uploaded_image img").attr("width", "256px");
+					$("#uploaded_image img").attr("height", "256px");
+					
+					
+					
+					img.onload = function () {
+						var canvas = document.createElement('canvas'),
+						ctx = canvas.getContext('2d');
+
+						canvas.height = img.naturalHeight;
+						canvas.width = img.naturalWidth;
+						ctx.drawImage(img, 0, 0);
+
+  
+						var uri = canvas.toDataURL('image/png'),
+						b64 = uri.replace(/^data:image.+;base64,/, '');
+
+						console.log(b64); //-> "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWP4z8DwHwAFAAH/q842iQAAAABJRU5ErkJggg=="
+						//uploadFile(b64);
+					};
+        
+				}
+				reader.readAsDataURL(input.files[0]);
+			  }
+			}
+		}
+		
+		$('#btn_predict').click(function () { 
+		
+			$(this).attr("disabled", "disabled");
+			$(this).attr("style", "background: #e4e7ee; color:black");
+			
+			$(".loader").show();
+		
+			var inputFile = $("#upload")[0];
+			
+			var formData = new FormData(inputFile);
+			
+			$.ajax({
+				type: 'POST',
+				url: '/predict',
+				data: formData,
+				contentType: false,
+				cache: false,
+				processData: false,
+				async: true,
+				success: function (data) {
+				    if (data) { 
+						$(".loader").hide();
+						$("#btn_predict").removeAttr("disabled")
+						$("#btn_predict").attr("style", "background: #324c7f; color:#fff");
+                        var parsedData = JSON.parse(JSON.parse(data));
+                        console.log(parsedData);
+                        
+                        // Get and display the result
+                        if (parsedData.category !== "Happy Babies") {
+                            $("#result").show();
+                            $('#result').fadeIn(600);
+                        }
+                        
+                        
+                        $('#msg').text(' Model Predicted as :  Category ' + parsedData.category + ' with confidence : ' + parsedData.confidence);
+                        console.log('Success!');
+                    }
+				},
+			});
+		});
+	// }
+	
+		$("#clear_form").on("click", function(e)  {
+		
+			e.preventDefault();
+			$("form")[0].reset();
+			$("#uploaded_image").html("");
+			$("#btn_predict").attr("disabled", "disabled");
+			$("#btn_predict").attr("style", "background: #e4e7ee; color:black");
+			$(".loader").hide();
+		}); 
+	
+	</script>
+    
+    
+  </body>
+</html>
